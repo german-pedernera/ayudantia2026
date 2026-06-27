@@ -77,10 +77,10 @@ const Sidebar = ({ open, onClose }) => {
         </Avatar>
         <Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
-            Sistema de
+            Ayudantia
           </Typography>
           <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.2 }}>
-            Aniversarios
+            Esviacatalina
           </Typography>
         </Box>
       </Box>

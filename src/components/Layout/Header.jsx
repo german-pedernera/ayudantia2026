@@ -30,7 +30,7 @@ const Header = ({ onMenuToggle }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const pageTitle = pageTitles[location.pathname] || 'Sistema de Aniversarios';
+  const pageTitle = pageTitles[location.pathname] || 'Ayudantia Esviacatalina';
 
   return (
     <AppBar

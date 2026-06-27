@@ -55,44 +55,25 @@ const Login = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0d47a1 0%, #1a237e 25%, #283593 50%, #1565c0 75%, #01579b 100%)',
-        backgroundSize: '400% 400%',
-        animation: 'gradientShift 15s ease infinite',
-        '@keyframes gradientShift': {
-          '0%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-          '100%': { backgroundPosition: '0% 50%' },
-        },
+        background: 'linear-gradient(rgba(0, 10, 30, 0.7), rgba(0, 10, 30, 0.8)), url("https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop") no-repeat center center',
+        backgroundSize: 'cover',
         p: 2,
         position: 'relative',
         overflow: 'hidden',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: '-50%',
-          left: '-50%',
-          width: '200%',
-          height: '200%',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)',
-          backgroundSize: '50px 50px',
-          animation: 'float 20s linear infinite',
-        },
-        '@keyframes float': {
-          '0%': { transform: 'translate(0, 0)' },
-          '100%': { transform: 'translate(50px, 50px)' },
-        },
       }}
     >
       <Card
-        elevation={24}
+        elevation={0}
         sx={{
           maxWidth: 420,
           width: '100%',
           borderRadius: 4,
           overflow: 'visible',
           position: 'relative',
-          bgcolor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(20px)',
+          bgcolor: 'rgba(15, 25, 45, 0.6)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
         }}
       >
         <CardContent sx={{ p: 4 }}>
@@ -109,13 +90,10 @@ const Login = () => {
             >
               <CelebrationIcon sx={{ fontSize: 38, color: '#fff' }} />
             </Avatar>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 800, color: '#1a237e', textAlign: 'center' }}
-            >
-              Sistema de Aniversarios
+            <Typography component="h1" variant="h4" sx={{ fontWeight: 800, color: '#fff', mb: 1, textAlign: 'center' }}>
+              Ayudantia Esviacatalina
             </Typography>
-            <Typography variant="body2" sx={{ color: '#546e7a', mt: 0.5 }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', mt: 0.5 }}>
               Ingrese sus credenciales para acceder
             </Typography>
           </Box>
@@ -140,7 +118,22 @@ const Login = () => {
               fullWidth
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              sx={{ mb: 2.5 }}
+              sx={{ 
+                mb: 2.5,
+                '& .MuiOutlinedInput-root': {
+                  color: '#fff',
+                  bgcolor: 'rgba(0,0,0,0.2)',
+                  '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                  '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                  '&.Mui-focused fieldset': { borderColor: '#fff' },
+                },
+                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                '& .MuiInputLabel-root.Mui-focused': { color: '#fff' },
+                '& input:-webkit-autofill': {
+                  WebkitBoxShadow: '0 0 0 1000px rgba(15, 25, 45, 0.8) inset',
+                  WebkitTextFillColor: '#fff',
+                }
+              }}
               autoFocus
               autoComplete="username"
             />
@@ -153,7 +146,22 @@ const Login = () => {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              sx={{ 
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  color: '#fff',
+                  bgcolor: 'rgba(0,0,0,0.2)',
+                  '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                  '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                  '&.Mui-focused fieldset': { borderColor: '#fff' },
+                },
+                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                '& .MuiInputLabel-root.Mui-focused': { color: '#fff' },
+                '& input:-webkit-autofill': {
+                  WebkitBoxShadow: '0 0 0 1000px rgba(15, 25, 45, 0.8) inset',
+                  WebkitTextFillColor: '#fff',
+                }
+              }}
               autoComplete="current-password"
               slotProps={{
                 input: {
@@ -162,7 +170,7 @@ const Login = () => {
                       <IconButton
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
-                        color="primary"
+                        sx={{ color: 'rgba(255,255,255,0.7)' }}
                         aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
