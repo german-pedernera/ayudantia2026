@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Usuarios: lectura pública para validar login, escritura solo admin
+    match /usuarios/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Personas: solo usuarios autenticados
+    match /personas/{document} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Instituciones: solo usuarios autenticados
+    match /instituciones/{document} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Configuración: solo usuarios autenticados
+    match /configuracion/{document} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

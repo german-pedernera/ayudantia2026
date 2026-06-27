@@ -1,0 +1,18 @@
+export const JERARQUIAS = [
+  'Comandante General',
+  'Comandante Mayor',
+  'Comandante Principal',
+  'Comandante',
+  'Segundo Comandante',
+  'Primer Alférez',
+  'Alférez',
+  'Subalférez',
+  'Suboficial Mayor',
+  'Suboficial Principal',
+  'Sargento Ayudante',
+  'Sargento Primero',
+  'Sargento',
+  'Cabo Primero',
+  'Cabo',
+  'Gendarme',
+];
