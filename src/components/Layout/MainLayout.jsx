@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import Sidebar, { DRAWER_WIDTH } from './Sidebar';
 import Header from './Header';
+import InstallPrompt from '../InstallPrompt';
 
 const MainLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,6 +28,7 @@ const MainLayout = ({ children }) => {
           {children}
         </Box>
       </Box>
+      <InstallPrompt />
     </Box>
   );
 };

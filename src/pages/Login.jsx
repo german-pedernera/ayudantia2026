@@ -18,6 +18,7 @@ import CelebrationIcon from '@mui/icons-material/Celebration';
 import LoginIcon from '@mui/icons-material/Login';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import InstallPrompt from '../components/InstallPrompt';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -206,6 +207,7 @@ const Login = () => {
           </Box>
         </CardContent>
       </Card>
+      <InstallPrompt />
     </Box>
   );
 };

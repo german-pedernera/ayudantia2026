@@ -21,7 +21,10 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CelebrationIcon from '@mui/icons-material/Celebration';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePWA } from '../../contexts/PWAContext';
 
 const DRAWER_WIDTH = 270;
 const ADMIN_USER = 'Ger25$';
@@ -32,6 +35,7 @@ const allMenuItems = [
   { text: 'Instituciones', icon: <BusinessIcon />, path: '/instituciones' },
   { text: 'Calendario', icon: <CalendarMonthIcon />, path: '/calendario' },
   { text: 'Reportes', icon: <AssessmentIcon />, path: '/reportes' },
+  { text: 'Recordatorios', icon: <AlarmIcon />, path: '/recordatorios' },
   { text: 'Configuración', icon: <SettingsIcon />, path: '/configuracion', adminOnly: true },
 ];
 
@@ -39,6 +43,7 @@ const Sidebar = ({ open, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { installable, installApp } = usePWA();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -164,6 +169,41 @@ const Sidebar = ({ open, onClose }) => {
           );
         })}
       </List>
+
+      {/* Install App */}
+      {installable && (
+        <>
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)', mx: 2 }} />
+          <List sx={{ px: 1.5, py: 1 }}>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={installApp}
+                sx={{
+                  borderRadius: 2,
+                  py: 1.2,
+                  px: 2,
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.15)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: '#fff', minWidth: 40 }}>
+                  <InstallMobileIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Instalar App"
+                  primaryTypographyProps={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#fff',
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </>
+      )}
 
       {/* Logout */}
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)', mx: 2 }} />

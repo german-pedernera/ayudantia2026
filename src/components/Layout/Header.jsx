@@ -21,6 +21,7 @@ const pageTitles = {
   '/instituciones': 'Instituciones',
   '/calendario': 'Calendario',
   '/reportes': 'Reportes',
+  '/recordatorios': 'Recordatorios',
   '/configuracion': 'Configuración',
 };
 

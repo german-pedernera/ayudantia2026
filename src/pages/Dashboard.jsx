@@ -19,9 +19,11 @@ import TodayIcon from '@mui/icons-material/Today';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import EventIcon from '@mui/icons-material/Event';
 import PhoneIcon from '@mui/icons-material/Phone';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import { usePersonas } from '../hooks/usePersonas';
 import { useInstituciones } from '../hooks/useInstituciones';
 import { useAniversarios } from '../hooks/useAniversarios';
+import { useRecordatorios } from '../hooks/useRecordatorios';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const StatCard = ({ title, value, icon, color, gradient }) => {
@@ -71,12 +73,15 @@ const StatCard = ({ title, value, icon, color, gradient }) => {
 const Dashboard = () => {
   const { personas, loading: loadingPersonas } = usePersonas();
   const { instituciones, loading: loadingInstituciones } = useInstituciones();
+  const { recordatorios, loading: loadingRecordatorios } = useRecordatorios();
   const { proximosCumpleanos, proximosAniversarios, stats } = useAniversarios(
     personas,
     instituciones
   );
 
-  if (loadingPersonas || loadingInstituciones) {
+  const recordatoriosActivos = recordatorios.filter(r => !r.notificado);
+
+  if (loadingPersonas || loadingInstituciones || loadingRecordatorios) {
     return <LoadingSpinner />;
   }
 
@@ -266,6 +271,73 @@ const Dashboard = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Sección de Recordatorios */}
+      <Card sx={{ mt: 4 }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <AlarmIcon sx={{ color: '#1565c0' }} />
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Recordatorios Activos
+            </Typography>
+            <Chip
+              label={`${recordatoriosActivos.length}`}
+              size="small"
+              color="primary"
+              sx={{ fontWeight: 700 }}
+            />
+          </Box>
+          <Divider sx={{ mb: 2 }} />
+          {recordatoriosActivos.length === 0 ? (
+            <Typography variant="body2" sx={{ color: 'text.secondary', py: 3, textAlign: 'center' }}>
+              No hay recordatorios pendientes.
+            </Typography>
+          ) : (
+            <Grid container spacing={2}>
+              {recordatoriosActivos.map((rem) => {
+                const isOverdue = new Date(rem.fechaHora) < new Date();
+                return (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={rem.id}>
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        border: '1px solid',
+                        borderColor: isOverdue ? 'error.light' : 'divider',
+                        bgcolor: isOverdue ? 'rgba(239, 83, 80, 0.04)' : 'background.paper',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                            {rem.titulo}
+                          </Typography>
+                          {isOverdue && (
+                            <Chip label="VENCIDO" size="small" color="error" sx={{ fontSize: 9, height: 18 }} />
+                          )}
+                        </Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, fontSize: 13 }}>
+                          {rem.descripcion || <i>Sin notas.</i>}
+                        </Typography>
+                      </Box>
+                      <Typography variant="caption" sx={{ color: isOverdue ? 'error.main' : 'text.secondary', fontWeight: 600 }}>
+                        ⏰ Límite: {new Date(rem.fechaHora).toLocaleString('es-AR', {
+                          dateStyle: 'short',
+                          timeStyle: 'short'
+                        })} hs.
+                      </Typography>
+                    </Box>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          )}
+        </CardContent>
+      </Card>
     </Box>
   );
 };

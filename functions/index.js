@@ -122,3 +122,107 @@ exports.checkAnniversaries = onSchedule(
     }
   }
 );
+
+/**
+ * Función programada que se ejecuta cada minuto.
+ * Busca recordatorios no notificados y cuya fecha/hora se haya cumplido para enviar alerta por Telegram.
+ */
+exports.checkReminders = onSchedule(
+  {
+    schedule: "* * * * *",
+    timeZone: "America/Argentina/Buenos_Aires",
+    retryCount: 3,
+  },
+  async (event) => {
+    logger.info("Iniciando verificación de recordatorios...");
+
+    try {
+      // Obtener configuración de Telegram
+      const configDoc = await db.collection("configuracion").doc("telegram").get();
+      if (!configDoc.exists) {
+        logger.warn("No se encontró configuración de Telegram");
+        return;
+      }
+
+      const { botToken, chatId } = configDoc.data();
+      if (!botToken || !chatId) {
+        logger.warn("Token o Chat ID de Telegram no configurados");
+        return;
+      }
+
+      const now = new Date();
+      const recordatoriosSnapshot = await db
+        .collection("recordatorios")
+        .where("notificado", "==", false)
+        .get();
+
+      if (recordatoriosSnapshot.empty) {
+        logger.info("No hay recordatorios pendientes por notificar");
+        return;
+      }
+
+      const batch = db.batch();
+      let sentCount = 0;
+
+      for (const doc of recordatoriosSnapshot.docs) {
+        const reminder = doc.data();
+        if (!reminder.fechaHora) continue;
+
+        // Si no tiene timezone específico de Argentina, le agregamos el offset.
+        let dateStr = reminder.fechaHora;
+        if (!dateStr.includes("-03:00") && !dateStr.includes("+") && !dateStr.includes("Z")) {
+          dateStr += "-03:00";
+        }
+        
+        const targetDate = new Date(dateStr);
+        
+        if (targetDate <= now) {
+          const message = 
+            `🔔 *Recordatorio Pendiente:*\n\n` +
+            `📌 *Título:* ${reminder.titulo}\n` +
+            `📝 *Anotación:* ${reminder.descripcion || "Sin descripción"}\n` +
+            `📅 *Plazo:* ${reminder.fechaHora.replace("T", " ")} hs.\n\n` +
+            `_Sistema de Aniversarios._`;
+
+          try {
+            const response = await fetch(
+              `https://api.telegram.org/bot${botToken}/sendMessage`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  chat_id: chatId,
+                  text: message,
+                  parse_mode: "Markdown",
+                }),
+              }
+            );
+
+            if (response.ok) {
+              logger.info(`Notificación enviada para recordatorio: ${reminder.titulo}`);
+              batch.update(doc.ref, { notificado: true });
+              sentCount++;
+            } else {
+              const errorData = await response.json();
+              logger.error(`Error al enviar Telegram para doc ${doc.id}:`, errorData);
+            }
+          } catch (err) {
+            logger.error(`Error al disparar Telegram para doc ${doc.id}:`, err);
+          }
+        }
+      }
+
+      if (sentCount > 0) {
+        await batch.commit();
+        logger.info(`Se procesaron y notificaron ${sentCount} recordatorios.`);
+      } else {
+        logger.info("Ningún recordatorio cumplió el plazo en esta ejecución.");
+      }
+
+    } catch (error) {
+      logger.error("Error general en checkReminders:", error);
+      throw error;
+    }
+  }
+);
+
