@@ -83,8 +83,11 @@ exports.checkAnniversaries = onSchedule(
 
       // Enviar mensajes a Telegram
       if (messages.length === 0) {
-        logger.info("No hay aniversarios para mañana");
-        return;
+        messages.push(
+          `📢 *Reporte Diario:*\n\n` +
+          `No hay cumpleaños ni aniversarios de instituciones registrados para mañana.\n\n` +
+          `_Sistema de Aniversarios._`
+        );
       }
 
       logger.info(`Enviando ${messages.length} notificación(es) a Telegram`);
